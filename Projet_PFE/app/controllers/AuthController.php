@@ -6,11 +6,13 @@ class AuthController
 {
     public function showLogin()
     {
+        require_once "../views/auth/login.php";
 
     }
 
     public function showRegister()
     {
+        require_once "../views/auth/register.php";
 
     }
 

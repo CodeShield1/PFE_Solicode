@@ -1,0 +1,28 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 20px 60px;
+
+    background-color: #0f172a;
+}
+
+.logo h2 {
+    color: white;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}

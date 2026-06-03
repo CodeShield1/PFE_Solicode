@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
+
+/* --- VARIABLES GLOBAL --- */
+:root {
+    --primary-orange: #f39c12;
+    --primary-blue: #003366;
+    --secondary-blue: #004a99;
+    --light-bg: #ffffff; /* Fond blanc pur */
+    --white: #ffffff;
+    --text-dark: #222222;
+    --text-muted: #777777;
+    --bg-gradient: #ffffff; 
+    --shadow-main: 0 10px 40px rgba(0, 0, 0, 0.08); /* Ombre plus douce et précise */
+    --radius-lg: 30px;
+    --radius-md: 12px;
+    --transition: 0.3s ease;
+}
+
+/* --- BASE RULES --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: var(--white);
+    min-height: 100vh;
+    color: var(--text-dark);
+}
+
+/* --- LOGO STYLE --- */
+.logo {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 15px;
+    letter-spacing: -1.5px;
+    display: inline-block;
+}
+.logo .mega { color: var(--primary-blue); }
+.logo .loc { color: var(--primary-orange); }
+
+/* --- COMMON INPUTS --- */
+.input-field-custom {
+    width: 100%;
+    padding: 16px 20px 16px 55px;
+    border: 1.5px solid #eee;
+    border-radius: var(--radius-md);
+    background: #f9f9f9;
+    outline: none;
+    transition: var(--transition);
+    font-size: 16px;
+}
+
+.input-field-custom:focus {
+    border-color: var(--primary-orange);
+    background: var(--white);
+    box-shadow: 0 0 15px rgba(243, 156, 18, 0.1);
+}
+
+/* --- COMMON BUTTONS --- */
+.btn-main {
+    width: 100%;
+    padding: 18px;
+    background: var(--primary-orange);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-main:hover {
+    background: var(--primary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 51, 102, 0.2);
+}
