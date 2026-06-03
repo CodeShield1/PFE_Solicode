@@ -1,31 +1,20 @@
-/* Importation des bases et variables */
+/* Importation de la 9a3ida global */
 @import url('style.css');
-
-body {
-    background: var(--white);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    margin: 0;
-}
 
 .auth-wrapper {
     display: flex;
-    width: 100%;
-    max-width: 1100px;
-    /* Mizane de la hauteur : s'adapte à l'écran sans déborder */
-    min-height: clamp(600px, 85vh, 750px);
+    width: var(--fluid-width);
+    max-width: var(--fluid-max-width);
+    min-height: var(--fluid-min-height);
     height: auto;
     background: var(--white);
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-main);
-    border: 1px solid #f0f0f0; 
+    border: 1px solid #f0f0f0;
 }
 
-/* Image Side */
+/* Image Side (Fluid) */
 .auth-image {
     flex: 1.2;
     background: url('../images/login.png') no-repeat center center/cover;
@@ -35,32 +24,32 @@ body {
 
 .image-overlay {
     position: absolute;
-    bottom: clamp(30px, 5vh, 50px);
-    left: clamp(30px, 5vw, 50px);
+    bottom: var(--fluid-padding);
+    left: var(--fluid-padding);
     color: var(--white);
     text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
     padding-right: 20px;
 }
 
 .image-overlay h1 {
-    font-size: clamp(32px, 4vw, 48px);
+    font-size: var(--font-h1);
     font-weight: 800;
     margin-bottom: 10px;
 }
 
 .image-overlay p {
-    font-size: clamp(14px, 1.5vw, 18px);
+    font-size: var(--font-body);
     opacity: 0.9;
 }
 
-/* Form Side */
+/* Form Side (Fluid) */
 .auth-form-container {
     flex: 0.8;
     background: var(--white);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: clamp(30px, 4vw, 60px); /* Padding fluide */
+    padding: var(--fluid-padding); /* Utilise la 9a3ida global */
 }
 
 .form-box {
@@ -68,24 +57,24 @@ body {
 }
 
 .form-header {
-    margin-bottom: clamp(20px, 4vh, 40px);
+    margin-bottom: var(--fluid-gap);
     text-align: center;
 }
 
 .form-header h2 {
-    font-size: clamp(26px, 3vw, 38px); /* Titre fluide */
+    font-size: var(--font-h2);
     color: var(--primary-blue);
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     font-weight: 800;
 }
 
 .form-header p {
     color: var(--text-muted);
-    font-size: clamp(14px, 1vw, 16px);
+    font-size: var(--font-small);
 }
 
 .input-group {
-    margin-bottom: clamp(15px, 2.5vh, 25px);
+    margin-bottom: var(--fluid-gap);
 }
 
 .input-group label {
@@ -93,7 +82,7 @@ body {
     margin-bottom: 8px;
     font-weight: 600;
     color: var(--text-dark);
-    font-size: 14px;
+    font-size: var(--font-small);
 }
 
 .field {
@@ -113,13 +102,13 @@ body {
 
 .field input {
     width: 100%;
-    padding: clamp(12px, 2vh, 18px) 20px clamp(12px, 2vh, 18px) 55px;
+    padding: clamp(12px, 1.8vh, 18px) 20px clamp(12px, 1.8vh, 18px) 55px;
     border: 1.5px solid #eee;
     border-radius: var(--radius-md);
     background: #f9f9f9;
     outline: none;
     transition: var(--transition);
-    font-size: 15px;
+    font-size: var(--font-body);
 }
 
 .field input:focus {
@@ -132,38 +121,13 @@ body {
     right: 20px;
     left: auto;
     cursor: pointer;
-    transition: var(--transition);
-}
-
-/* Bouton Principal Fluid */
-.btn-login {
-    width: 100%;
-    padding: clamp(12px, 2vh, 18px);
-    background: var(--primary-orange);
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: clamp(15px, 1.2vw, 18px);
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-login:hover {
-    background: var(--primary-blue);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 51, 102, 0.2);
 }
 
 .form-options {
     display: flex;
     justify-content: space-between;
-    font-size: 13px;
-    margin-bottom: clamp(20px, 3vh, 30px);
+    font-size: var(--font-small);
+    margin-bottom: var(--fluid-gap);
 }
 
 .form-options a {
@@ -174,8 +138,8 @@ body {
 
 .form-footer {
     text-align: center;
-    margin-top: clamp(20px, 4vh, 35px);
-    font-size: 14px;
+    margin-top: var(--fluid-gap);
+    font-size: var(--font-small);
 }
 
 .form-footer a {
@@ -192,6 +156,7 @@ body {
     .auth-wrapper {
         min-height: 100vh;
         max-width: 100%;
+        width: 100%;
         border-radius: 0;
         margin: 0;
         box-shadow: none;
