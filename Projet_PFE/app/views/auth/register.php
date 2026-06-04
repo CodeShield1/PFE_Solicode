@@ -28,12 +28,19 @@
                     <p>Créez votre compte gratuitement</p>
                 </div>
 
+                <?php if (isset($_SESSION['error'])): ?>
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+                    </div>
+                <?php endif; ?>
+
                 <form action="index.php?url=register" method="POST" id="registerForm">
                     <div class="input-group">
                         <label>Nom complet</label>
                         <div class="field">
                             <i class="fas fa-user"></i>
-                            <input type="text" name="name" placeholder="Votre nom complet" required>
+                            <input type="text" name="name" id="name" placeholder="Votre nom complet" required>
                         </div>
                     </div>
 
@@ -41,7 +48,7 @@
                         <label>Email</label>
                         <div class="field">
                             <i class="fas fa-envelope"></i>
-                            <input type="email" name="email" placeholder="votre@email.com" required>
+                            <input type="email" name="email" id="email" placeholder="votre@email.com" required>
                         </div>
                     </div>
 
@@ -49,7 +56,7 @@
                         <label>Téléphone</label>
                         <div class="field">
                             <i class="fas fa-phone"></i>
-                            <input type="text" name="phone" placeholder="06 00 00 00 00" required>
+                            <input type="text" name="phone" id="phone" placeholder="06 00 00 00 00" required>
                         </div>
                     </div>
 

@@ -1,31 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
 
-/* --- 9A3IDA GLOBAL (FLUID DESIGN SYSTEM) --- */
+/* --- VARIABLES GLOBAL --- */
 :root {
-    /* Alwan */
     --primary-orange: #f39c12;
     --primary-blue: #003366;
+    --secondary-blue: #004a99;
+    --light-bg: #ffffff;
     --white: #ffffff;
     --text-dark: #222222;
     --text-muted: #777777;
-
-    /* Mizane dyal l'Layout (Fluid) */
-    --fluid-width: 95%;
-    --fluid-max-width: 1100px;
-    --fluid-min-height: clamp(600px, 85vh, 750px);
-    --fluid-padding: clamp(25px, 4vw, 60px);
-    --fluid-gap: clamp(15px, 3vh, 30px);
-
-    /* Mizane dyal l'Ktaba (Fluid Typography) */
-    --font-h1: clamp(32px, 5vw, 48px);
-    --font-h2: clamp(26px, 3vw, 38px);
-    --font-body: clamp(14px, 1vw, 16px);
-    --font-small: clamp(12px, 0.8vw, 14px);
-
-    /* UI Styles */
+    --bg-gradient: #ffffff; 
+    --shadow-main: 0 10px 40px rgba(0, 0, 0, 0.08);
     --radius-lg: 30px;
     --radius-md: 12px;
-    --shadow-main: 0 10px 40px rgba(0, 0, 0, 0.08);
     --transition: 0.3s ease;
 }
 
@@ -41,42 +28,83 @@ body {
     background: var(--white);
     min-height: 100vh;
     color: var(--text-dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--font-body);
 }
 
-/* Common Logo */
+/* --- LOGO STYLE --- */
 .logo {
-    font-size: var(--font-h2);
+    font-size: 36px;
     font-weight: 800;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     letter-spacing: -1.5px;
     display: inline-block;
 }
 .logo .mega { color: var(--primary-blue); }
 .logo .loc { color: var(--primary-orange); }
 
-/* Common Button */
+/* --- COMMON INPUTS --- */
+.input-field-custom {
+    width: 100%;
+    padding: 16px 20px 16px 55px;
+    border: 1.5px solid #eee;
+    border-radius: var(--radius-md);
+    background: #f9f9f9;
+    outline: none;
+    transition: var(--transition);
+    font-size: 16px;
+}
+
+.input-field-custom:focus {
+    border-color: var(--primary-orange);
+    background: var(--white);
+    box-shadow: 0 0 15px rgba(243, 156, 18, 0.1);
+}
+
+/* --- COMMON BUTTONS --- */
 .btn-main {
     width: 100%;
-    padding: clamp(12px, 2vh, 18px);
+    padding: 18px;
     background: var(--primary-orange);
     color: var(--white);
     border: none;
     border-radius: var(--radius-md);
-    font-size: var(--font-body);
+    font-size: 18px;
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .btn-main:hover {
     background: var(--primary-blue);
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(0, 51, 102, 0.2);
+}
+
+/* --- ALERTS --- */
+.alert {
+    padding: 12px 15px;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideDown 0.3s ease;
+}
+
+.alert-error {
+    background: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
+
+.alert-success {
+    background: #f0fff4;
+    color: #2f855a;
+    border: 1px solid #9ae6b4;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }

@@ -1,28 +1,108 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Importation de la 9a3ida global */
+@import url('style.css');
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
-body {
-    font-family: Arial, sans-serif;
+/* Header & Nav */
+.header {
+    background: var(--white);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
-header {
+
+.nav {
+    height: 80px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    padding: 20px 60px;
-
-    background-color: #0f172a;
-}
-
-.logo h2 {
-    color: white;
 }
 
 .actions {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 30px;
+}
+
+.login-link {
+    text-decoration: none;
+    color: var(--primary-blue);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.login-link:hover {
+    color: var(--primary-orange);
+}
+
+.auth-btn {
+    padding: 12px 25px;
+    font-size: 14px;
+    width: auto;
+}
+
+/* Hero Section */
+.hero {
+    padding: 100px 0;
+    background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('../images/login.png') no-repeat center center/cover;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+}
+
+.hero-text {
+    max-width: 600px;
+}
+
+.hero-text h1 {
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: var(--primary-blue);
+    font-weight: 800;
+}
+
+.hero-text h1 span {
+    color: var(--primary-orange);
+}
+
+.hero-text p {
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+.hero-btns {
+    display: flex;
+    gap: 20px;
+}
+
+.hero-btns .btn-main {
+    max-width: 300px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav {
+        padding: 0 15px;
+    }
+    .actions {
+        gap: 15px;
+    }
+    .hero {
+        padding: 60px 0;
+        text-align: center;
+    }
+    .hero-text {
+        margin: 0 auto;
+    }
+    .hero-btns {
+        justify-content: center;
+    }
 }
