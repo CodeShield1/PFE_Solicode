@@ -55,7 +55,7 @@
                         <label>Mot de passe</label>
                         <div class="field">
                             <i class="fas fa-lock"></i>
-                            <input type="password" name="password" id="password" placeholder="••••••••" required>
+                            <input type="password" name="password" id="password"  required>
                             <i class="fas fa-eye toggle-password"></i>
                         </div>
                     </div>
