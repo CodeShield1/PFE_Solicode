@@ -26,7 +26,7 @@
 
         <nav class="sidebar-menu">
             <div class="menu-label">Principal</div>
-            <a href="index.php?url=admin/dashboard" class="menu-item <?php echo ($currentPage == 'dashboard') ? 'active' : ''; ?>">
+            <a href="index.php?url=admin_dashboard" class="menu-item <?php echo ($currentPage == 'dashboard') ? 'active' : ''; ?>">
                 <i class="fas fa-home"></i>
                 Dashboard
             </a>
@@ -34,7 +34,7 @@
                 <i class="fas fa-tools"></i>
                 Equipments
             </a>
-            <a href="index.php?url=category" class="menu-item <?php echo ($currentPage == 'category') ? 'active' : ''; ?>">
+            <a href="index.php?url=categories" class="menu-item <?php echo ($currentPage == 'category') ? 'active' : ''; ?>">
                 <i class="fas fa-layer-group"></i>
                 Catégories
             </a>

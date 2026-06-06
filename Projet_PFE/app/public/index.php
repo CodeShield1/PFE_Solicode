@@ -1,6 +1,9 @@
 <?php
 
 require_once "../controllers/AuthController.php";
+require_once "../controllers/CityController.php";
+require_once "../controllers/CategoryController.php";
+
 
 // On démarre la session ici aussi pour le check des rôles
 if (session_status() === PHP_SESSION_NONE) {
@@ -9,6 +12,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
 $url = $_GET['url'] ?? 'home';
 $authController = new AuthController();
+$cityController = new CityController();
+$categoryController = new CategoryController();
 
 switch ($url) {
 
@@ -49,6 +54,79 @@ switch ($url) {
         // Sécurité : Seul l'admin peut entrer ici
         if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
             require_once "../views/admin/dashboard.php";
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'cities':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            $cityController->index();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'add_city':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            $cityController->store();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'update_city':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            $cityController->update();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'delete_city':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            $cityController->delete();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'categories':
+    case 'category':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            $categoryController->index();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'add_category':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            $categoryController->store();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'update_category':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            $categoryController->update();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'delete_category':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            $categoryController->delete();
         } else {
             header('Location: index.php?url=login');
             exit;
