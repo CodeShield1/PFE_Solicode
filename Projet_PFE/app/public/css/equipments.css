@@ -82,6 +82,11 @@ tr:hover td {
     color: #718096;
 }
 
+.city-name i {
+    color: var(--active-orange);
+    margin-right: 4px;
+}
+
 .price-tag {
     color: #2d3748;
     font-weight: 600;
