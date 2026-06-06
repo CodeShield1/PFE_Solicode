@@ -3,6 +3,7 @@
 require_once "../controllers/AuthController.php";
 require_once "../controllers/CityController.php";
 require_once "../controllers/CategoryController.php";
+require_once "../controllers/EquipmentController.php";
 
 
 // On démarre la session ici aussi pour le check des rôles
@@ -14,6 +15,7 @@ $url = $_GET['url'] ?? 'home';
 $authController = new AuthController();
 $cityController = new CityController();
 $categoryController = new CategoryController();
+$equipmentController = new EquipmentController();
 
 switch ($url) {
 
@@ -127,6 +129,42 @@ switch ($url) {
     case 'delete_category':
         if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
             $categoryController->delete();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'equipment':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            $equipmentController->index();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'add_equipment':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            $equipmentController->store();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'update_equipment':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            $equipmentController->update();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'delete_equipment':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            $equipmentController->delete();
         } else {
             header('Location: index.php?url=login');
             exit;

@@ -105,12 +105,14 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    width: calc(100% - 240px); /* Subtract sidebar width to prevent overflow */
+    box-sizing: border-box;
 }
 
 /* --- TOP HEADER --- */
 header {
     background: white;
-    padding: 12px 25px;
+    padding: 15px 30px; /* Increased side padding */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -118,16 +120,26 @@ header {
     position: sticky;
     top: 0;
     z-index: 90;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .header-left h2 {
     font-size: 18px;
     font-weight: 700;
+    margin: 0;
 }
 
 .header-left p {
     font-size: 12px;
-    color: var(--text-muted);
+    color: var(--text-gray);
+    margin: 3px 0 0 0;
 }
 
 .header-right {
@@ -136,66 +148,48 @@ header {
     gap: 20px;
 }
 
-.notifications {
-    position: relative;
-    cursor: pointer;
-    font-size: 18px;
-    color: #4a5568;
-}
-
-.badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: var(--active-orange);
-    color: white;
-    font-size: 9px;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid white;
-}
-
 .user-profile {
     display: flex;
     align-items: center;
-    gap: 8px;
-    cursor: pointer;
+    gap: 12px;
+    padding: 5px 10px;
+    border-radius: 12px;
+    transition: background 0.2s;
+}
+
+.user-profile:hover {
+    background: #f8fafc;
 }
 
 .user-avatar {
-    width: 35px;
-    height: 35px;
+    width: 36px;
+    height: 36px;
     background: #edf2f7;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--primary-blue);
-    font-weight: 600;
+    color: var(--active-orange);
+    font-weight: 700;
     font-size: 14px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
 }
 
 .user-info .name {
     display: block;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
+    color: var(--sidebar-bg);
 }
 
 .user-info .role {
     display: block;
     font-size: 11px;
-    color: var(--text-muted);
-}
-
-/* --- HEADER LEFT --- */
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+    color: var(--text-gray);
 }
 
 .menu-toggle {
@@ -207,8 +201,9 @@ header {
 
 /* --- PAGE CONTENT --- */
 .content-wrapper {
-    padding: 20px;
+    padding: 25px 30px; /* Aligned with header padding */
     flex: 1;
+    box-sizing: border-box;
 }
 
 /* --- RESPONSIVE --- */
@@ -224,6 +219,7 @@ header {
 
     .main-content {
         margin-left: 0;
+        width: 100%;
     }
 
     .menu-toggle {
@@ -231,7 +227,7 @@ header {
     }
 
     header {
-        padding: 10px 15px;
+        padding: 15px 20px;
     }
 
     .header-left h2 {
