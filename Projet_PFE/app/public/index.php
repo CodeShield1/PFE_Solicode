@@ -4,6 +4,7 @@ require_once "../controllers/AuthController.php";
 require_once "../controllers/CityController.php";
 require_once "../controllers/CategoryController.php";
 require_once "../controllers/EquipmentController.php";
+require_once "../controllers/ClientController.php";
 
 
 // On démarre la session ici aussi pour le check des rôles
@@ -16,6 +17,7 @@ $authController = new AuthController();
 $cityController = new CityController();
 $categoryController = new CategoryController();
 $equipmentController = new EquipmentController();
+$clientController = new ClientController();
 
 switch ($url) {
 
@@ -165,6 +167,15 @@ switch ($url) {
     case 'delete_equipment':
         if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
             $equipmentController->delete();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'clients':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            $clientController->index();
         } else {
             header('Location: index.php?url=login');
             exit;

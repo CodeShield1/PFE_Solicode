@@ -1,0 +1,97 @@
+/* --- CLIENT MANAGEMENT STYLES --- */
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    margin-top: 20px;
+    box-sizing: border-box;
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.table-header h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a202c;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+th {
+    text-align: left;
+    padding: 12px 10px;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #4a5568;
+    border-bottom: 2px solid #f7fafc;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #f7fafc;
+    font-size: 13px;
+    color: #4a5568;
+    vertical-align: middle;
+}
+
+tr:hover td {
+    background-color: #fcfcfc;
+}
+
+.client-avatar {
+    width: 35px;
+    height: 35px;
+    background: #ebf8ff;
+    color: #3182ce;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.client-info .name {
+    display: block;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.client-info .email {
+    display: block;
+    font-size: 11px;
+    color: #718096;
+}
+
+.date-badge {
+    font-size: 12px;
+    color: #718096;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.date-badge i {
+    color: var(--active-orange);
+}
+
+.phone-number {
+    font-family: monospace;
+    font-size: 12px;
+    color: #4a5568;
+}

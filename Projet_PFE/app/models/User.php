@@ -1,6 +1,6 @@
 <?php
 
-require_once "../config/Database.php";
+require_once __DIR__ . "/../config/database.php";
 
 class User extends Database
 {
@@ -34,5 +34,16 @@ class User extends Database
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([':email' => $email]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getClients()
+    {
+        $sql = "SELECT id_user, name, email, phone, role, created_at 
+                FROM users 
+                WHERE role = 'client' 
+                ORDER BY created_at DESC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
