@@ -22,6 +22,8 @@ $clientController = new ClientController();
 switch ($url) {
 
     case 'home':
+        $categories = $categoryController->getAllCategories();
+        $cities = $cityController->getAllCities();
         require_once "../views/client/home.php";
         break;
 

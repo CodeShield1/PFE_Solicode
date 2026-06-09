@@ -82,6 +82,11 @@ class CityController
         }
     }
 
+    public function getAllCities()
+    {
+        return $this->cityModel->getAll();
+    }
+
     private function uploadImage($file)
     {
         $targetDir = __DIR__ . "/../public/uploads/cities/";

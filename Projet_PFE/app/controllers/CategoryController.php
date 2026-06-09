@@ -92,6 +92,11 @@ class CategoryController
         }
     }
 
+    public function getAllCategories()
+    {
+        return $this->categoryModel->getAll();
+    }
+
     private function uploadImage($file)
     {
         $targetDir = __DIR__ . "/../public/uploads/categories/";
