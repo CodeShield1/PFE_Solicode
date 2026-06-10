@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 70">
+  <text x="100" y="42" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="26" fill="#DA1A32" text-anchor="middle" letter-spacing="2">HITACHI</text>
+  <path d="M40 50 L160 50" stroke="#DA1A32" stroke-width="2"/>
+  <text x="100" y="62" font-family="Arial, sans-serif" font-weight="600" font-size="8" fill="#000" text-anchor="middle" letter-spacing="3">INSPIRE THE NEXT</text>
+</svg>

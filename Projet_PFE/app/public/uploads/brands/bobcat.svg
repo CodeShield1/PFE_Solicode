@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 70">
+  <path d="M15 35 Q15 18 32 18 L45 18 L40 35 L45 52 L32 52 Q15 52 15 35 Z" fill="#E03127"/>
+  <circle cx="28" cy="30" r="2.5" fill="#fff"/>
+  <text x="55" y="44" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="22" fill="#000" letter-spacing="1">BOBCAT</text>
+</svg>

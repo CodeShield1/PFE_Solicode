@@ -1,0 +1,89 @@
+/* ===========================================================
+   HOME :: CTA SECTION
+   =========================================================== */
+
+.cta-section { background: #fff; padding-bottom: 30px; }
+
+.cta-card {
+    position: relative;
+    background: linear-gradient(135deg, var(--secondary) 0%, #1a2235 100%);
+    border-radius: 28px;
+    padding: 70px 60px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    align-items: center;
+    gap: 40px;
+    box-shadow: 0 30px 60px rgba(12, 16, 27, 0.25);
+}
+
+/* Decorative shapes */
+.cta-bg-shapes { position: absolute; inset: 0; overflow: hidden; }
+.cta-bg-shapes .shape {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--primary);
+    opacity: 0.12;
+    filter: blur(20px);
+}
+.shape-1 { width: 320px; height: 320px; top: -110px; right: -90px; }
+.shape-2 { width: 220px; height: 220px; bottom: -90px; left: 20%; opacity: 0.08; }
+.shape-3 {
+    width: 180px; height: 180px;
+    top: 30%; right: 35%;
+    background: #fff;
+    opacity: 0.04;
+    filter: blur(28px);
+}
+
+.cta-content { position: relative; z-index: 1; color: #fff; }
+.cta-content h2 {
+    font-size: 40px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin: 14px 0 18px;
+}
+.cta-content h2 span { color: var(--primary); }
+.cta-content p {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.7;
+    margin-bottom: 32px;
+    max-width: 520px;
+}
+
+.cta-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+.cta-visual {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.cta-visual i {
+    font-size: 200px;
+    color: var(--primary);
+    opacity: 0.9;
+    filter: drop-shadow(0 12px 30px rgba(255, 107, 0, 0.4));
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50%      { transform: translateY(-14px) rotate(3deg); }
+}
+
+@media (max-width: 992px) {
+    .cta-card { grid-template-columns: 1fr; padding: 50px 36px; text-align: center; gap: 24px; }
+    .cta-content p { margin-left: auto; margin-right: auto; }
+    .cta-actions { justify-content: center; }
+    .cta-content h2 { font-size: 30px; }
+    .cta-visual i { font-size: 130px; }
+}
+@media (max-width: 480px) {
+    .cta-card { padding: 40px 24px; border-radius: 22px; }
+    .cta-content h2 { font-size: 26px; }
+}

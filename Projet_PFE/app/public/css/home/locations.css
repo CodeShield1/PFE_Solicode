@@ -1,0 +1,144 @@
+/* ===========================================================
+   HOME :: AVAILABLE LOCATIONS SECTION
+   =========================================================== */
+
+.locations-section { background: #fff; }
+
+.locations-track { padding-bottom: 8px; }
+
+.city-card {
+    flex: 0 0 200px;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    height: 180px;
+    cursor: pointer;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    scroll-snap-align: start;
+    text-decoration: none;
+}
+.city-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.16);
+}
+
+.city-card-img {
+    position: absolute;
+    inset: 0;
+    background: var(--light-bg);
+}
+.city-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+.city-card:hover .city-card-img img { transform: scale(1.1); }
+
+/* --- CSS-only placeholder used when a city has no uploaded image --- */
+.city-card-img.no-image {
+    background: linear-gradient(135deg, #1a2235 0%, #0c101b 60%, #ff6b00 160%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.city-card-img.no-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle at 25% 25%, rgba(255, 107, 0, 0.18) 0, transparent 40%),
+        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.06) 0, transparent 50%);
+}
+.city-card-placeholder-icon {
+    position: relative;
+    z-index: 1;
+    font-size: 54px;
+    color: rgba(255, 255, 255, 0.22);
+    transition: transform 0.5s ease, color 0.5s ease;
+}
+.city-card:hover .city-card-placeholder-icon {
+    transform: scale(1.1) rotate(-4deg);
+    color: rgba(255, 107, 0, 0.45);
+}
+
+.city-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+        rgba(12, 16, 27, 0) 0%,
+        rgba(12, 16, 27, 0.4) 55%,
+        rgba(12, 16, 27, 0.92) 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 16px;
+    color: #fff;
+    transition: background 0.3s ease;
+}
+.city-card:hover .city-card-overlay {
+    background: linear-gradient(180deg,
+        rgba(12, 16, 27, 0.1) 0%,
+        rgba(255, 107, 0, 0.3) 50%,
+        rgba(12, 16, 27, 0.95) 100%);
+}
+
+.city-card-info h3 {
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 3px;
+    letter-spacing: -0.3px;
+}
+.city-card-info span {
+    font-size: 10px;
+    font-weight: 600;
+    opacity: 0.85;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.city-card-info span i { color: var(--primary); font-size: 9px; }
+
+.city-card-arrow {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 11px;
+    flex-shrink: 0;
+}
+.city-card:hover .city-card-arrow {
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: rotate(-45deg);
+}
+
+/* --- Empty state (no cities in DB) --- */
+.locations-empty {
+    text-align: center;
+    padding: 60px 24px;
+    background: var(--light-bg);
+    border-radius: 18px;
+    border: 1.5px dashed var(--border);
+    color: var(--muted-text);
+}
+.locations-empty i {
+    font-size: 42px;
+    color: var(--primary);
+    opacity: 0.5;
+    margin-bottom: 12px;
+}
+.locations-empty p { font-size: 14px; font-weight: 600; }
+
+@media (max-width: 768px) {
+    .city-card { flex-basis: 170px; height: 160px; }
+    .city-card-placeholder-icon { font-size: 46px; }
+    .city-card-info h3 { font-size: 15px; }
+}

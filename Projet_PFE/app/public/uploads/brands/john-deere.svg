@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 70">
+  <path d="M28 18 L42 18 L46 30 L36 42 L46 54 L28 54 L22 42 L28 30 Z" fill="#367C2B"/>
+  <path d="M30 28 L40 32 L34 38 Z" fill="#FFDE00"/>
+  <text x="58" y="34" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="14" fill="#367C2B" letter-spacing="1">JOHN DEERE</text>
+  <path d="M58 40 L160 40" stroke="#367C2B" stroke-width="1.5"/>
+  <text x="58" y="54" font-family="Arial, sans-serif" font-weight="600" font-size="8" fill="#367C2B" letter-spacing="2">NOTHING RUNS LIKE A DEERE</text>
+</svg>
