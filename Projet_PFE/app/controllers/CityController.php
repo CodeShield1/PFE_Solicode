@@ -33,12 +33,16 @@ class CityController
                     'name' => $name,
                     'image' => $imageName
                 ];
-                $this->cityModel->create($data);
-                header('Location: index.php?url=cities');
+                try {
+                    $this->cityModel->create($data);
+                    $_SESSION['success'] = "Ville ajoutée avec succès.";
+                } catch (Exception $e) {
+                    $_SESSION['error'] = "Erreur lors de l'ajout : " . $e->getMessage();
+                }
             } else {
-                $_SESSION['error'] = "Failed to upload image.";
-                header('Location: index.php?url=cities');
+                $_SESSION['error'] = "Échec de l'upload de l'image.";
             }
+            header('Location: index.php?url=cities');
             exit;
         }
     }
@@ -62,12 +66,16 @@ class CityController
                     'name' => $name,
                     'image' => $imageName
                 ];
-                $this->cityModel->update($id, $data);
-                header('Location: index.php?url=cities');
+                try {
+                    $this->cityModel->update($id, $data);
+                    $_SESSION['success'] = "Ville modifiée avec succès.";
+                } catch (Exception $e) {
+                    $_SESSION['error'] = "Erreur lors de la modification : " . $e->getMessage();
+                }
             } else {
-                $_SESSION['error'] = "Failed to upload image.";
-                header('Location: index.php?url=cities');
+                $_SESSION['error'] = "Échec de l'upload de l'image.";
             }
+            header('Location: index.php?url=cities');
             exit;
         }
     }
@@ -76,7 +84,15 @@ class CityController
     {
         if (isset($_GET['id'])) {
             $id = $_GET['id'];
-            $this->cityModel->delete($id);
+            try {
+                if ($this->cityModel->delete($id)) {
+                    $_SESSION['success'] = "Ville supprimée avec succès.";
+                } else {
+                    $_SESSION['error'] = "Erreur lors de la suppression.";
+                }
+            } catch (Exception $e) {
+                $_SESSION['error'] = "Impossible de supprimer cette ville car elle est liée à des équipements.";
+            }
             header('Location: index.php?url=cities');
             exit;
         }

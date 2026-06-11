@@ -33,10 +33,14 @@ class CategoryController
                     'name' => $name,
                     'image' => $imageName
                 ];
-                if ($this->categoryModel->create($data)) {
-                    $_SESSION['success'] = "Catégorie ajoutée avec succès.";
-                } else {
-                    $_SESSION['error'] = "Erreur lors de l'ajout.";
+                try {
+                    if ($this->categoryModel->create($data)) {
+                        $_SESSION['success'] = "Catégorie ajoutée avec succès.";
+                    } else {
+                        $_SESSION['error'] = "Erreur lors de l'ajout.";
+                    }
+                } catch (Exception $e) {
+                    $_SESSION['error'] = "Erreur lors de l'ajout : " . $e->getMessage();
                 }
             } else {
                 $_SESSION['error'] = "Échec de l'upload de l'image.";
@@ -65,10 +69,14 @@ class CategoryController
                     'name' => $name,
                     'image' => $imageName
                 ];
-                if ($this->categoryModel->update($id, $data)) {
-                    $_SESSION['success'] = "Catégorie modifiée avec succès.";
-                } else {
-                    $_SESSION['error'] = "Erreur lors de la modification.";
+                try {
+                    if ($this->categoryModel->update($id, $data)) {
+                        $_SESSION['success'] = "Catégorie modifiée avec succès.";
+                    } else {
+                        $_SESSION['error'] = "Erreur lors de la modification.";
+                    }
+                } catch (Exception $e) {
+                    $_SESSION['error'] = "Erreur lors de la modification : " . $e->getMessage();
                 }
             } else {
                 $_SESSION['error'] = "Échec de l'upload de l'image.";
@@ -82,9 +90,13 @@ class CategoryController
     {
         if (isset($_GET['id'])) {
             $id = $_GET['id'];
-            if ($this->categoryModel->delete($id)) {
-                $_SESSION['success'] = "Catégorie supprimée avec succès.";
-            } else {
+            try {
+                if ($this->categoryModel->delete($id)) {
+                    $_SESSION['success'] = "Catégorie supprimée avec succès.";
+                } else {
+                    $_SESSION['error'] = "Erreur lors de la suppression.";
+                }
+            } catch (Exception $e) {
                 $_SESSION['error'] = "Impossible de supprimer cette catégorie car elle est liée à des équipements.";
             }
             header('Location: index.php?url=categories');

@@ -48,10 +48,14 @@ class EquipmentController
 
             if ($imageName) {
                 $data['image'] = $imageName;
-                if ($this->equipmentModel->create($data)) {
-                    $_SESSION['success'] = "Équipement ajouté avec succès.";
-                } else {
-                    $_SESSION['error'] = "Erreur lors de l'ajout en base de données.";
+                try {
+                    if ($this->equipmentModel->create($data)) {
+                        $_SESSION['success'] = "Équipement ajouté avec succès.";
+                    } else {
+                        $_SESSION['error'] = "Erreur lors de l'ajout en base de données.";
+                    }
+                } catch (Exception $e) {
+                    $_SESSION['error'] = "Erreur lors de l'ajout : " . $e->getMessage();
                 }
             } else {
                 $_SESSION['error'] = "Échec de l'upload de l'image.";
@@ -86,10 +90,14 @@ class EquipmentController
                 }
             }
 
-            if ($this->equipmentModel->update($id, $data)) {
-                $_SESSION['success'] = "Équipement modifié avec succès.";
-            } else {
-                $_SESSION['error'] = "Erreur lors de la modification.";
+            try {
+                if ($this->equipmentModel->update($id, $data)) {
+                    $_SESSION['success'] = "Équipement modifié avec succès.";
+                } else {
+                    $_SESSION['error'] = "Erreur lors de la modification.";
+                }
+            } catch (Exception $e) {
+                $_SESSION['error'] = "Erreur lors de la modification : " . $e->getMessage();
             }
 
             header('Location: index.php?url=equipment');
@@ -101,10 +109,14 @@ class EquipmentController
     {
         if (isset($_GET['id'])) {
             $id = $_GET['id'];
-            if ($this->equipmentModel->delete($id)) {
-                $_SESSION['success'] = "Équipement supprimé avec succès.";
-            } else {
-                $_SESSION['error'] = "Erreur lors de la suppression.";
+            try {
+                if ($this->equipmentModel->delete($id)) {
+                    $_SESSION['success'] = "Équipement supprimé avec succès.";
+                } else {
+                    $_SESSION['error'] = "Erreur lors de la suppression.";
+                }
+            } catch (Exception $e) {
+                $_SESSION['error'] = "Impossible de supprimer cet équipement car il est lié à des réservations.";
             }
             header('Location: index.php?url=equipment');
             exit;
