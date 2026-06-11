@@ -119,35 +119,70 @@ switch ($url) {
             $db = new Database();
             $conn = $db->connect();
 
-            // Reservation stats
-            $stmt = $conn->query("SELECT status, COUNT(*) as cnt, COALESCE(SUM(total_price),0) as revenue FROM reservations GROUP BY status");
-            $resStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $dashPending = 0; $dashApproved = 0; $dashRejected = 0; $dashRevenue = 0;
-            foreach ($resStats as $rs) {
-                if ($rs['status'] === 'Pending') $dashPending = (int)$rs['cnt'];
-                elseif ($rs['status'] === 'Approved') { $dashApproved = (int)$rs['cnt']; $dashRevenue = (float)$rs['revenue']; }
-                elseif ($rs['status'] === 'Rejected') $dashRejected = (int)$rs['cnt'];
-            }
+            // Current month / previous month boundaries
+            $thisMonthStart = date('Y-m-01');
+            $lastMonthStart = date('Y-m-01', strtotime('first day of last month'));
+            $lastMonthEnd   = date('Y-m-t', strtotime('last month'));
+
+            // --- STAT CARDS ---
 
             // Total equipment
-            $stmt = $conn->query("SELECT COUNT(*) as cnt FROM equipment");
-            $dashEquipment = (int)$stmt->fetch(PDO::FETCH_ASSOC)['cnt'];
+            $dashEquipment = (int)$conn->query("SELECT COUNT(*) FROM equipment")->fetchColumn();
+            $dashEquipThisMonth = (int)$conn->query("SELECT COUNT(*) FROM equipment WHERE created_at >= '$thisMonthStart'")->fetchColumn();
+
+            // Available equipment (stock > 0)
+            $dashAvailEquip = (int)$conn->query("SELECT COUNT(*) FROM equipment WHERE quantity_stock > 0")->fetchColumn();
+            $dashAvailThisMonth = (int)$conn->query("SELECT COUNT(*) FROM equipment WHERE quantity_stock > 0 AND created_at >= '$thisMonthStart'")->fetchColumn();
+
+            // Total reservations
+            $dashTotalRes = (int)$conn->query("SELECT COUNT(*) FROM reservations")->fetchColumn();
+            $dashResThisMonth = (int)$conn->query("SELECT COUNT(*) FROM reservations WHERE created_at >= '$thisMonthStart'")->fetchColumn();
+
+            // Monthly revenue (approved reservations this month)
+            $stmt = $conn->query("SELECT COALESCE(SUM(total_price),0) FROM reservations WHERE status='Approved' AND created_at >= '$thisMonthStart'");
+            $dashMonthRevenue = (float)$stmt->fetchColumn();
+            $stmt = $conn->query("SELECT COALESCE(SUM(total_price),0) FROM reservations WHERE status='Approved' AND created_at >= '$lastMonthStart' AND created_at <= '$lastMonthEnd'");
+            $dashLastMonthRevenue = (float)$stmt->fetchColumn();
+            $dashRevenueDelta = $dashMonthRevenue - $dashLastMonthRevenue;
 
             // Total clients
-            $stmt = $conn->query("SELECT COUNT(*) as cnt FROM users WHERE role='client'");
-            $dashClients = (int)$stmt->fetch(PDO::FETCH_ASSOC)['cnt'];
+            $dashClients = (int)$conn->query("SELECT COUNT(*) FROM users WHERE role='client'")->fetchColumn();
+            $dashClientsThisMonth = (int)$conn->query("SELECT COUNT(*) FROM users WHERE role='client' AND created_at >= '$thisMonthStart'")->fetchColumn();
 
-            // Total categories
-            $stmt = $conn->query("SELECT COUNT(*) as cnt FROM categories");
-            $dashCategories = (int)$stmt->fetch(PDO::FETCH_ASSOC)['cnt'];
+            // Reservation status breakdown (for donut chart)
+            $dashPending = 0; $dashApproved = 0; $dashRejected = 0;
+            $stmt = $conn->query("SELECT status, COUNT(*) as cnt FROM reservations GROUP BY status");
+            foreach ($stmt as $rs) {
+                if ($rs['status'] === 'Pending')  $dashPending  = (int)$rs['cnt'];
+                if ($rs['status'] === 'Approved') $dashApproved = (int)$rs['cnt'];
+                if ($rs['status'] === 'Rejected') $dashRejected = (int)$rs['cnt'];
+            }
 
-            // Total cities
-            $stmt = $conn->query("SELECT COUNT(*) as cnt FROM cities");
-            $dashCities = (int)$stmt->fetch(PDO::FETCH_ASSOC)['cnt'];
+            // Most used equipment (for bar chart) - top 5 by reservation count
+            $stmt = $conn->query("
+                SELECT e.name, COUNT(re.reservation_id) as usage_count
+                FROM equipment e
+                JOIN reservation_equipment re ON e.id_equipment = re.equipment_id
+                GROUP BY e.id_equipment
+                ORDER BY usage_count DESC
+                LIMIT 5
+            ");
+            $dashMostUsed = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Recent reservations (last 5)
-            $stmt = $conn->query("SELECT r.id_reservation, r.status, r.total_price, r.created_at, u.name as client_name FROM reservations r JOIN users u ON r.user_id = u.id_user ORDER BY r.created_at DESC LIMIT 5");
+            // Recent reservations with items count
+            $stmt = $conn->query("
+                SELECT r.id_reservation, r.status, r.total_price, r.start_date, r.end_date, r.created_at,
+                       u.name as client_name, u.email as client_email,
+                       (SELECT COUNT(*) FROM reservation_equipment WHERE reservation_id = r.id_reservation) as items_count
+                FROM reservations r
+                JOIN users u ON r.user_id = u.id_user
+                ORDER BY r.created_at DESC
+                LIMIT 5
+            ");
             $dashRecentRes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Notification count (pending reservations)
+            $dashNotifCount = $dashPending;
 
             require_once "../views/admin/dashboard.php";
         } else {

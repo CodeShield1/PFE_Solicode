@@ -83,6 +83,12 @@
             </div>
 
             <div class="header-right">
+                <?php if (isset($dashNotifCount) && $dashNotifCount > 0): ?>
+                <a href="index.php?url=reservations" class="header-notif">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-badge"><?= $dashNotifCount ?></span>
+                </a>
+                <?php endif; ?>
                 <div class="user-profile">
                     <div class="user-avatar">
                         <?php echo strtoupper(substr($_SESSION['user_name'] ?? 'A', 0, 1)); ?>

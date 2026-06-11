@@ -7,6 +7,39 @@
     --content-bg: #f8fafc;
 }
 
+/* --- NOTIFICATION BELL --- */
+.header-notif {
+    position: relative;
+    font-size: 18px;
+    color: #4a5568;
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 10px;
+    transition: background 0.2s;
+}
+
+.header-notif:hover {
+    background: #f8fafc;
+    color: var(--active-orange);
+}
+
+.notif-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+}
+
 body {
     display: flex;
     min-height: 100vh;
