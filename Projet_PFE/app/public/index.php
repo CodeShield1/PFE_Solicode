@@ -28,56 +28,68 @@ switch ($url) {
         break;
 
     case 'equipments_list':
-        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'client') {
-            $city_id     = !empty($_GET['city'])       ? (int)$_GET['city']       : null;
-            $category_id = !empty($_GET['category'])   ? (int)$_GET['category']   : null;
-            $price_min   = !empty($_GET['price_min'])  ? (float)$_GET['price_min']: null;
-            $price_max   = !empty($_GET['price_max'])  ? (float)$_GET['price_max']: null;
-            $page        = !empty($_GET['page'])       ? max(1,(int)$_GET['page']) : 1;
+        // 1. Get from URL (highest priority)
+        $city_id     = !empty($_GET['city'])       ? (int)$_GET['city']       : null;
+        $category_id = !empty($_GET['category'])   ? (int)$_GET['category']   : null;
+        $price_min   = !empty($_GET['price_min'])  ? (float)$_GET['price_min']: null;
+        $price_max   = !empty($_GET['price_max'])  ? (float)$_GET['price_max']: null;
+        $page        = !empty($_GET['page'])       ? max(1,(int)$_GET['page']) : 1;
+        $get_start   = $_GET['start_date'] ?? null;
+        $get_end     = $_GET['end_date'] ?? null;
 
-            // Date validation securisée
-            $start_date = '';
-            $end_date   = '';
-            $date_error = '';
-            $today    = date('Y-m-d');
-            $tomorrow = date('Y-m-d', strtotime('+1 day'));
-
-            if (!empty($_GET['start_date']) && !empty($_GET['end_date'])) {
-                $s = $_GET['start_date'];
-                $e = $_GET['end_date'];
-                if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $s) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $e)) {
-                    $date_error = 'Invalid date format.';
-                } elseif ($s < $tomorrow) {
-                    $date_error = 'Start date must be at least tomorrow.';
-                } elseif ($e <= $s) {
-                    $date_error = 'End date must be after start date.';
-                } else {
-                    $start_date = $s;
-                    $end_date   = $e;
-                }
-            }
-
-            $filters = array_filter([
-                'city_id'     => $city_id,
-                'category_id' => $category_id,
-                'price_min'   => $price_min,
-                'price_max'   => $price_max,
-                'start_date'  => $start_date,
-                'end_date'    => $end_date,
-            ]);
-
-            $result     = $equipmentController->getEquipmentModel()->search($filters, $page);
-            $equipments = $result['items'];
-            $total      = $result['total'];
-            $totalPages = $result['pages'];
-
-            $cities     = $cityController->getAllCities();
-            $categories = $categoryController->getAllCategories();
-            require_once "../views/client/equipments.php";
-        } else {
-            header('Location: index.php?url=login');
-            exit;
+        // 2. Fallback to Session (if URL is empty)
+        if (!$city_id && isset($_SESSION['search_city'])) {
+            $city_id = (int)$_SESSION['search_city'];
         }
+        if (!$get_start && isset($_SESSION['search_start_date'])) {
+            $get_start = $_SESSION['search_start_date'];
+        }
+        if (!$get_end && isset($_SESSION['search_end_date'])) {
+            $get_end = $_SESSION['search_end_date'];
+        }
+
+        // Date validation securisée
+        $start_date = '';
+        $end_date   = '';
+        $date_error = '';
+        $today    = date('Y-m-d');
+        $tomorrow = date('Y-m-d', strtotime('+1 day'));
+
+        if (!empty($get_start) && !empty($get_end)) {
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $get_start) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $get_end)) {
+                $date_error = 'Invalid date format.';
+            } elseif ($get_start < $tomorrow) {
+                $date_error = 'Start date must be at least tomorrow.';
+            } elseif ($get_end <= $get_start) {
+                $date_error = 'End date must be after start date.';
+            } else {
+                $start_date = $get_start;
+                $end_date   = $get_end;
+            }
+        }
+
+        $filters = array_filter([
+            'city_id'     => $city_id,
+            'category_id' => $category_id,
+            'price_min'   => $price_min,
+            'price_max'   => $price_max,
+            'start_date'  => $start_date,
+            'end_date'    => $end_date,
+        ]);
+
+        // Save back to session to keep it sticky
+        if ($city_id) $_SESSION['search_city'] = $city_id;
+        if ($start_date) $_SESSION['search_start_date'] = $start_date;
+        if ($end_date) $_SESSION['search_end_date'] = $end_date;
+
+        $result     = $equipmentController->getEquipmentModel()->search($filters, $page);
+        $equipments = $result['items'];
+        $total      = $result['total'];
+        $totalPages = $result['pages'];
+
+        $cities     = $cityController->getAllCities();
+        $categories = $categoryController->getAllCategories();
+        require_once "../views/client/equipments.php";
         break;
 
     case 'login':
@@ -220,26 +232,59 @@ switch ($url) {
         break;
 
     case 'equipment_detail':
-        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'client') {
-            $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-            $equipment = $equipmentController->getEquipmentModel()->getById($id);
-            if (!$equipment) { echo "<h1>Equipment not found</h1>"; break; }
-            $categories = $categoryController->getAllCategories();
-            require_once "../views/client/equipment_detail.php";
-        } else {
-            header('Location: index.php?url=login');
-            exit;
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        
+        // Save search context to session
+        if (isset($_GET['city'])) $_SESSION['search_city'] = $_GET['city'];
+        if (isset($_GET['start_date'])) $_SESSION['search_start_date'] = $_GET['start_date'];
+        if (isset($_GET['end_date'])) $_SESSION['search_end_date'] = $_GET['end_date'];
+
+        $equipment = $equipmentController->getEquipmentModel()->getById($id);
+        if (!$equipment) { echo "<h1>Equipment not found</h1>"; break; }
+        
+        // Check availability if dates are in session
+        $available_stock = $equipment['quantity_stock'];
+        if (!empty($_SESSION['search_start_date']) && !empty($_SESSION['search_end_date'])) {
+            $available_stock = $equipmentController->getEquipmentModel()->getAvailableStock($id, $_SESSION['search_start_date'], $_SESSION['search_end_date']);
         }
+
+        $categories = $categoryController->getAllCategories();
+        require_once "../views/client/equipment_detail.php";
+        break;
+
+    case 'add_to_cart':
+        require_once "../controllers/CartController.php";
+        (new CartController())->add();
+        break;
+
+    case 'remove_from_cart':
+        require_once "../controllers/CartController.php";
+        (new CartController())->remove();
+        break;
+
+    case 'clear_cart':
+        require_once "../controllers/CartController.php";
+        (new CartController())->clear();
+        break;
+
+    case 'reserve_now':
+        require_once "../controllers/ReservationController.php";
+        (new ReservationController())->reserveNow();
+        break;
+
+    case 'reserve_all':
+        require_once "../controllers/ReservationController.php";
+        (new ReservationController())->reserveAll();
+        break;
+
+    case 'my_reservations':
+        require_once "../controllers/ReservationController.php";
+        (new ReservationController())->myReservations();
         break;
 
     case 'cart':
-        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'client') {
-            $categories = $categoryController->getAllCategories();
-            require_once "../views/client/cart.php";
-        } else {
-            header('Location: index.php?url=login');
-            exit;
-        }
+        $categories = $categoryController->getAllCategories();
+        require_once "../views/client/cart.php";
         break;
 
     case 'clients':

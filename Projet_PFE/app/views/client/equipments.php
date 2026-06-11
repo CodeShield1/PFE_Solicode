@@ -151,7 +151,7 @@ include __DIR__ . '/../layout/client_header.php';
                                 <small>/ Day</small>
                             </div>
                         </div>
-                        <a href="index.php?url=equipment_detail&id=<?= $eq['id_equipment'] ?>" class="ep-btn-details">
+                        <a href="index.php?url=equipment_detail&id=<?= $eq['id_equipment'] ?>&city=<?= $city_id ?>&start_date=<?= $start_date ?>&end_date=<?= $end_date ?>" class="ep-btn-details">
                             <i class="fas fa-eye"></i> View Details
                         </a>
                     </div>
@@ -206,134 +206,36 @@ include __DIR__ . '/../layout/client_header.php';
     </main>
 </div>
 
-<!-- ===== CART DRAWER ===== -->
-<div class="cart-overlay" id="cartOverlay" onclick="closeCartDrawer()"></div>
-<div class="cart-drawer" id="cartDrawer">
-    <div class="cart-drawer-header">
-        <h3><i class="fas fa-shopping-cart" style="margin-right:8px;"></i> My Cart</h3>
-        <button class="cart-drawer-close" onclick="closeCartDrawer()"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="cart-drawer-body" id="cartDrawerBody">
-        <div class="cart-empty-state" id="cartEmptyState">
-            <i class="fas fa-shopping-cart"></i>
-            <p>Your cart is empty</p>
-            <small style="color:#bbb;font-size:13px;">Add equipment to get started</small>
-        </div>
-        <div id="cartItemsList"></div>
-    </div>
-    <div class="cart-drawer-footer" id="cartDrawerFooter" style="display:none;">
-        <div class="cart-total">
-            <span>Total</span>
-            <span id="cartTotal">0 DH</span>
-        </div>
-        <a href="index.php?url=checkout" class="cart-checkout-btn">
-            <i class="fas fa-check-circle"></i> Proceed to Checkout
-        </a>
-    </div>
-</div>
+<?php include __DIR__ . '/../layout/client_footer.php'; ?>
 
 <script>
-// ---- Flatpickr ----
-const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
-const fpStart = flatpickr("#fpStart", {
-    minDate: tomorrow, dateFormat: "Y-m-d",
-    onChange: function(sel, dateStr) {
-        const next = new Date(dateStr); next.setDate(next.getDate() + 1);
-        fpEnd.set('minDate', next);
-        if (fpEnd.selectedDates[0] && fpEnd.selectedDates[0] <= sel[0]) fpEnd.clear();
-    }
-});
-const fpEnd = flatpickr("#fpEnd", { minDate: tomorrow, dateFormat: "Y-m-d" });
-
-// ---- Price range ----
+// --- Price Range Slider Update ---
 function updatePrice(val) {
-    document.getElementById('priceMaxLabel').textContent = parseInt(val).toLocaleString() + ' DH';
+    document.getElementById('priceMaxLabel').innerText = parseInt(val).toLocaleString() + ' DH';
     document.getElementById('priceMaxInput').value = val;
 }
 
-// ---- Cart (localStorage) ----
-function getCart() { return JSON.parse(localStorage.getItem('megaloc_cart') || '[]'); }
-function saveCart(c) { localStorage.setItem('megaloc_cart', JSON.stringify(c)); }
+// --- Flatpickr Date Selection ---
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
-function addToCart(id, name, price, city, image, startDate, endDate) {
-    if (!startDate || !endDate) {
-        alert('Please select start and end dates before adding to cart.');
-        return;
-    }
-    const cart = getCart();
-    const exists = cart.find(i => i.id === id);
-    if (exists) { openCartDrawer(); return; }
+    const fpStart = flatpickr("#fpStart", {
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        minDate: tomorrow,
+        onChange: function(selectedDates, dateStr, instance) {
+            fpEnd.set('minDate', dateStr);
+        }
+    });
 
-    const days = Math.ceil((new Date(endDate) - new Date(startDate)) / 86400000);
-    cart.push({ id, name, price, city, image, startDate, endDate, days, total: price * days });
-    saveCart(cart);
-    updateCartBadge();
-    renderCart();
-    openCartDrawer();
-}
-
-function removeFromCart(id) {
-    saveCart(getCart().filter(i => i.id !== id));
-    updateCartBadge();
-    renderCart();
-}
-
-function updateCartBadge() {
-    const badge = document.getElementById('cartBadge');
-    if (badge) badge.textContent = getCart().length;
-}
-
-function renderCart() {
-    const cart = getCart();
-    const list  = document.getElementById('cartItemsList');
-    const empty = document.getElementById('cartEmptyState');
-    const footer = document.getElementById('cartDrawerFooter');
-
-    if (!cart.length) {
-        list.innerHTML = '';
-        empty.style.display = 'flex';
-        footer.style.display = 'none';
-        return;
-    }
-    empty.style.display = 'none';
-    footer.style.display = 'block';
-
-    let totalDH = 0;
-    list.innerHTML = cart.map(item => {
-        totalDH += item.total;
-        const img = item.image
-            ? `<img src="uploads/equipments/${item.image}" class="cart-item-img" alt="">`
-            : `<div class="cart-item-img placeholder"><i class="fas fa-tractor"></i></div>`;
-        return `
-        <div class="cart-item">
-            ${img}
-            <div class="cart-item-info">
-                <p class="cart-item-name">${item.name}</p>
-                <p class="cart-item-city"><i class="fas fa-map-marker-alt"></i> ${item.city}</p>
-                <p class="cart-item-dates">${item.startDate} → ${item.endDate} (${item.days} day${item.days > 1 ? 's' : ''})</p>
-                <p class="cart-item-price">${item.total.toLocaleString()} DH</p>
-            </div>
-            <button class="cart-item-remove" onclick="removeFromCart(${item.id})">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>`;
-    }).join('');
-
-    document.getElementById('cartTotal').textContent = totalDH.toLocaleString() + ' DH';
-}
-
-function openCartDrawer() {
-    document.getElementById('cartDrawer').classList.add('open');
-    document.getElementById('cartOverlay').classList.add('open');
-    renderCart();
-}
-function closeCartDrawer() {
-    document.getElementById('cartDrawer').classList.remove('open');
-    document.getElementById('cartOverlay').classList.remove('open');
-}
-
-// Init
-updateCartBadge();
+    const fpEnd = flatpickr("#fpEnd", {
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        minDate: tomorrow
+    });
+});
 </script>
-
-<?php include __DIR__ . '/../layout/client_footer.php'; ?>

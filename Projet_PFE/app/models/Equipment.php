@@ -34,7 +34,40 @@ class Equipment
                   WHERE e.id_equipment = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([':id' => $id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Add a placeholder brand since it's not in the DB but requested in UI
+        if ($res && !isset($res['brand'])) {
+            $res['brand'] = 'Generic'; // Fallback
+        }
+        return $res;
+    }
+
+    public function getAvailableStock($id, $startDate, $endDate)
+    {
+        // Get total stock
+        $query = "SELECT quantity_stock FROM equipment WHERE id_equipment = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([':id' => $id]);
+        $totalStock = (int)$stmt->fetchColumn();
+
+        // Get reserved quantity for these dates (Approved or Pending)
+        $query = "SELECT SUM(re.quantity) 
+                  FROM reservation_equipment re
+                  JOIN reservations r ON re.reservation_id = r.id_reservation
+                  WHERE re.equipment_id = :id
+                    AND r.status IN ('Pending', 'Approved')
+                    AND r.start_date <= :end_date
+                    AND r.end_date >= :start_date";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([
+            ':id' => $id,
+            ':start_date' => $startDate,
+            ':end_date' => $endDate
+        ]);
+        $reserved = (int)$stmt->fetchColumn();
+
+        return max(0, $totalStock - $reserved);
     }
 
     public function create($data)
@@ -106,7 +139,7 @@ class Equipment
             $params[':price_max'] = (float)$filters['price_max'];
         }
 
-        // Exclure les équipements déjà réservés sur ces dates (Approved/Pending)
+        // Exclure les équipements dont le stock est épuisé sur ces dates
         if (!empty($filters['start_date']) && !empty($filters['end_date'])) {
             $start = $filters['start_date'];
             $end   = $filters['end_date'];
@@ -114,9 +147,12 @@ class Equipment
                 SELECT re.equipment_id
                 FROM reservation_equipment re
                 JOIN reservations r ON re.reservation_id = r.id_reservation
+                JOIN equipment e2 ON re.equipment_id = e2.id_equipment
                 WHERE r.status IN ('Pending','Approved')
                   AND r.start_date <= :end_date
                   AND r.end_date   >= :start_date
+                GROUP BY re.equipment_id
+                HAVING SUM(re.quantity) >= MIN(e2.quantity_stock)
             )";
             $params[':start_date'] = $start;
             $params[':end_date']   = $end;

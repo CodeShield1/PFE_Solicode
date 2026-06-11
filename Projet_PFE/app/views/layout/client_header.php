@@ -93,9 +93,10 @@ $pageCSS    = isset($pageCSS)    && is_array($pageCSS)    ? $pageCSS    : [];
             </div>
 
             <?php if ($showCart): ?>
+                <?php $cartCount = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?>
                 <button onclick="openCartDrawer()" class="cart-btn" aria-label="Cart">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-badge" id="cartBadge">0</span>
+                    <span class="cart-badge" id="cartBadge"><?php echo $cartCount; ?></span>
                 </button>
             <?php endif; ?>
 
@@ -141,3 +142,65 @@ $pageCSS    = isset($pageCSS)    && is_array($pageCSS)    ? $pageCSS    : [];
         </div>
     </div>
 </header>
+
+<!-- ===== CART DRAWER ===== -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCartDrawer()"></div>
+<div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer-header">
+        <h3><i class="fas fa-shopping-cart" style="margin-right:8px;"></i> My Cart</h3>
+        <button class="cart-drawer-close" onclick="closeCartDrawer()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="cart-drawer-body" id="cartDrawerBody">
+        <?php if (empty($_SESSION['cart'])): ?>
+            <div class="cart-empty-state" id="cartEmptyState">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Your cart is empty</p>
+                <small style="color:#bbb;font-size:13px;">Add equipment to get started</small>
+            </div>
+        <?php else: ?>
+            <div id="cartItemsList">
+                <?php $totalDH = 0; ?>
+                <?php foreach ($_SESSION['cart'] as $id => $item): 
+                    $days = (strtotime($item['end_date']) - strtotime($item['start_date'])) / 86400;
+                    $itemTotal = $item['price'] * $item['quantity'] * $days;
+                    $totalDH += $itemTotal;
+                ?>
+                    <div class="cart-item">
+                        <img src="uploads/equipments/<?php echo $item['image']; ?>" class="cart-item-img" alt="">
+                        <div class="cart-item-info">
+                            <p class="cart-item-name"><?php echo htmlspecialchars($item['name']); ?></p>
+                            <p class="cart-item-city"><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($item['city_name']); ?></p>
+                            <p class="cart-item-dates"><?php echo $item['start_date']; ?> → <?php echo $item['end_date']; ?></p>
+                            <p class="cart-item-price"><?php echo number_format($itemTotal, 0); ?> DH</p>
+                        </div>
+                        <a href="index.php?url=remove_from_cart&id=<?php echo $id; ?>" class="cart-item-remove">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <?php if (!empty($_SESSION['cart'])): ?>
+        <div class="cart-drawer-footer" id="cartDrawerFooter">
+            <div class="cart-total">
+                <span>Total</span>
+                <span id="cartTotal"><?php echo number_format($totalDH, 0); ?> DH</span>
+            </div>
+            <a href="index.php?url=cart" class="cart-checkout-btn">
+                <i class="fas fa-check-circle"></i> View Cart & Checkout
+            </a>
+        </div>
+    <?php endif; ?>
+</div>
+
+<script>
+function openCartDrawer() {
+    document.getElementById('cartDrawer').classList.add('open');
+    document.getElementById('cartOverlay').classList.add('open');
+}
+function closeCartDrawer() {
+    document.getElementById('cartDrawer').classList.remove('open');
+    document.getElementById('cartOverlay').classList.remove('open');
+}
+</script>
