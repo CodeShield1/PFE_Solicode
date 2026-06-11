@@ -60,17 +60,18 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const today = new Date();
-    const tomorrow = new Date(today);
+(function() {
+    var tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    const fpStart = flatpickr("#heroStart", {
+    var fpStart = flatpickr("#heroStart", {
         altInput: true, altFormat: "F j, Y", dateFormat: "Y-m-d", minDate: tomorrow,
-        onChange: function(selectedDates, dateStr) { fpEnd.set('minDate', dateStr); }
+        onChange: function(selectedDates, dateStr) {
+            if (dateStr && fpEnd) fpEnd.set('minDate', dateStr);
+        }
     });
-    const fpEnd = flatpickr("#heroEnd", {
+    var fpEnd = flatpickr("#heroEnd", {
         altInput: true, altFormat: "F j, Y", dateFormat: "Y-m-d", minDate: tomorrow
     });
-});
+})();
 </script>

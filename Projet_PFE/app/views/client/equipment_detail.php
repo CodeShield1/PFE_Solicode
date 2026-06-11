@@ -63,7 +63,10 @@ $is_available = ($available_stock > 0);
         <!-- LEFT COLUMN: Image Gallery -->
         <div class="ed-gallery">
             <div class="ed-main-img">
-                <?php if (!empty($equipment['image'])): ?>
+                <?php
+                $detailImgPath = __DIR__ . '/../../public/uploads/equipments/' . $equipment['image'];
+                if (!empty($equipment['image']) && file_exists($detailImgPath)):
+                ?>
                     <img src="uploads/equipments/<?php echo htmlspecialchars($equipment['image']); ?>" 
                          alt="<?php echo htmlspecialchars($equipment['name']); ?>" id="mainImage">
                 <?php else: ?>
@@ -71,18 +74,19 @@ $is_available = ($available_stock > 0);
                 <?php endif; ?>
             </div>
             
+            <?php if (!empty($equipment['image']) && file_exists($detailImgPath)): ?>
             <div class="ed-thumbnails">
-                <div class="thumb active" onclick="updateMainImage('uploads/equipments/<?php echo $equipment['image']; ?>', this)">
+                <div class="thumb active" onclick="updateMainImage('uploads/equipments/<?php echo htmlspecialchars($equipment['image']); ?>', this)">
                     <img src="uploads/equipments/<?php echo htmlspecialchars($equipment['image']); ?>" alt="Thumbnail 1">
                 </div>
-                <!-- Mock secondary images -->
-                <div class="thumb" onclick="updateMainImage('uploads/equipments/<?php echo $equipment['image']; ?>', this)">
+                <div class="thumb" onclick="updateMainImage('uploads/equipments/<?php echo htmlspecialchars($equipment['image']); ?>', this)">
                     <img src="uploads/equipments/<?php echo htmlspecialchars($equipment['image']); ?>" alt="Thumbnail 2" style="filter: brightness(0.9) contrast(1.1);">
                 </div>
-                <div class="thumb" onclick="updateMainImage('uploads/equipments/<?php echo $equipment['image']; ?>', this)">
+                <div class="thumb" onclick="updateMainImage('uploads/equipments/<?php echo htmlspecialchars($equipment['image']); ?>', this)">
                     <img src="uploads/equipments/<?php echo htmlspecialchars($equipment['image']); ?>" alt="Thumbnail 3" style="filter: saturate(1.5);">
                 </div>
             </div>
+            <?php endif; ?>
         </div>
 
         <!-- RIGHT COLUMN: Details & Action Card -->

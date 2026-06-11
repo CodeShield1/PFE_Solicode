@@ -55,7 +55,14 @@ include __DIR__ . '/../layout/header.php';
                 <tr>
                     <td>#<?php echo $cat['id_category']; ?></td>
                     <td>
-                        <img src="uploads/categories/<?php echo $cat['image']; ?>" alt="<?php echo htmlspecialchars($cat['name']); ?>" class="category-img">
+                        <?php
+                        $catImgPath = __DIR__ . '/../../public/uploads/categories/' . $cat['image'];
+                        if (!empty($cat['image']) && file_exists($catImgPath)):
+                        ?>
+                            <img src="uploads/categories/<?php echo $cat['image']; ?>" alt="<?php echo htmlspecialchars($cat['name']); ?>" class="category-img">
+                        <?php else: ?>
+                            <div style="width:60px;height:40px;background:#f1f5f9;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#ccc;"><i class="fas fa-layer-group"></i></div>
+                        <?php endif; ?>
                     </td>
                     <td><strong><?php echo htmlspecialchars($cat['name']); ?></strong></td>
                     <td class="actions">

@@ -55,7 +55,14 @@ include __DIR__ . '/../layout/header.php';
                 <tr>
                     <td>#<?php echo $city['id_city']; ?></td>
                     <td>
-                        <img src="uploads/cities/<?php echo $city['image']; ?>" alt="<?php echo htmlspecialchars($city['name']); ?>" class="city-img">
+                        <?php
+                        $cityImgPath = __DIR__ . '/../../public/uploads/cities/' . $city['image'];
+                        if (!empty($city['image']) && file_exists($cityImgPath)):
+                        ?>
+                            <img src="uploads/cities/<?php echo $city['image']; ?>" alt="<?php echo htmlspecialchars($city['name']); ?>" class="city-img">
+                        <?php else: ?>
+                            <div style="width:60px;height:40px;background:#f1f5f9;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#ccc;"><i class="fas fa-city"></i></div>
+                        <?php endif; ?>
                     </td>
                     <td><strong><?php echo htmlspecialchars($city['name']); ?></strong></td>
                     <td class="actions">

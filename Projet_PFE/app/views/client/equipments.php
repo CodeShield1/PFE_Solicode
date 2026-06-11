@@ -3,6 +3,7 @@ $pageTitle  = 'Equipments - MEGALOC';
 $activePage = 'equipments';
 $showCart   = true;
 $pageCSS    = ['equipments-page'];
+$pageJS     = [];
 
 include __DIR__ . '/../layout/client_header.php';
 ?>
@@ -132,7 +133,10 @@ include __DIR__ . '/../layout/client_header.php';
                 <?php foreach ($equipments as $eq): ?>
                     <div class="ep-card">
                         <div class="ep-card-img">
-                            <?php if (!empty($eq['image'])): ?>
+                            <?php
+                            $imgPath = __DIR__ . '/../../public/uploads/equipments/' . $eq['image'];
+                            if (!empty($eq['image']) && file_exists($imgPath)):
+                            ?>
                                 <img src="uploads/equipments/<?= htmlspecialchars($eq['image']) ?>"
                                      alt="<?= htmlspecialchars($eq['name']) ?>">
                             <?php else: ?>
@@ -206,8 +210,7 @@ include __DIR__ . '/../layout/client_header.php';
     </main>
 </div>
 
-<?php include __DIR__ . '/../layout/client_footer.php'; ?>
-
+<!-- INLINE SCRIPTS (before footer so they're inside <body>) -->
 <script>
 // --- Price Range Slider Update ---
 function updatePrice(val) {
@@ -216,26 +219,36 @@ function updatePrice(val) {
 }
 
 // --- Flatpickr Date Selection ---
-document.addEventListener('DOMContentLoaded', function() {
-    const today = new Date();
-    const tomorrow = new Date(today);
+(function() {
+    var tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    const fpStart = flatpickr("#fpStart", {
+    var fpStart = flatpickr("#fpStart", {
         altInput: true,
         altFormat: "F j, Y",
         dateFormat: "Y-m-d",
         minDate: tomorrow,
-        onChange: function(selectedDates, dateStr, instance) {
-            fpEnd.set('minDate', dateStr);
+        defaultDate: document.getElementById('fpStart').value || null,
+        onChange: function(selectedDates, dateStr) {
+            if (dateStr && fpEnd) {
+                fpEnd.set('minDate', dateStr);
+            }
         }
     });
 
-    const fpEnd = flatpickr("#fpEnd", {
+    var fpEnd = flatpickr("#fpEnd", {
         altInput: true,
         altFormat: "F j, Y",
         dateFormat: "Y-m-d",
-        minDate: tomorrow
+        minDate: tomorrow,
+        defaultDate: document.getElementById('fpEnd').value || null
     });
-});
+
+    // If start date has a value, set end date's minDate
+    if (document.getElementById('fpStart').value) {
+        fpEnd.set('minDate', document.getElementById('fpStart').value);
+    }
+})();
 </script>
+
+<?php include __DIR__ . '/../layout/client_footer.php'; ?>

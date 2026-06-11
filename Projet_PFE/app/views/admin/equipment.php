@@ -59,7 +59,14 @@ include __DIR__ . '/../layout/header.php';
             <?php foreach ($equipments as $equip): ?>
                 <tr>
                     <td>
-                        <img src="uploads/equipments/<?php echo $equip['image']; ?>" alt="Equip" class="equip-img">
+                        <?php
+                        $adminImgPath = __DIR__ . '/../../public/uploads/equipments/' . $equip['image'];
+                        if (!empty($equip['image']) && file_exists($adminImgPath)):
+                        ?>
+                            <img src="uploads/equipments/<?php echo $equip['image']; ?>" alt="Equip" class="equip-img">
+                        <?php else: ?>
+                            <div style="width:60px;height:45px;background:#f1f5f9;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#ccc;"><i class="fas fa-tractor"></i></div>
+                        <?php endif; ?>
                     </td>
                     <td><strong><?php echo htmlspecialchars($equip['name']); ?></strong></td>
                     <td>
