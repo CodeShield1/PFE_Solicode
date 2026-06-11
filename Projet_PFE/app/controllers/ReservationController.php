@@ -191,4 +191,180 @@ class ReservationController
 
         require_once __DIR__ . "/../views/client/my_reservations.php";
     }
+
+    // ==========================================
+    // ADMIN: List all reservations
+    // ==========================================
+    public function adminIndex()
+    {
+        $query = "SELECT r.*, u.name as client_name, u.email as client_email, u.phone as client_phone,
+                  COUNT(re.equipment_id) as items_count
+                  FROM reservations r
+                  JOIN users u ON r.user_id = u.id_user
+                  LEFT JOIN reservation_equipment re ON r.id_reservation = re.reservation_id
+                  GROUP BY r.id_reservation
+                  ORDER BY 
+                      CASE r.status 
+                          WHEN 'Pending' THEN 1 
+                          WHEN 'Approved' THEN 2 
+                          WHEN 'Rejected' THEN 3 
+                      END,
+                      r.created_at DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Fetch equipment for each reservation
+        foreach ($reservations as &$res) {
+            $query = "SELECT re.quantity, e.name as equipment_name, e.price_per_day, e.image, e.quantity_stock,
+                      ci.name as city_name
+                      FROM reservation_equipment re
+                      JOIN equipment e ON re.equipment_id = e.id_equipment
+                      JOIN cities ci ON e.city_id = ci.id_city
+                      WHERE re.reservation_id = :res_id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute([':res_id' => $res['id_reservation']]);
+            $res['equipments'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        include __DIR__ . "/../views/admin/reservation.php";
+    }
+
+    // ==========================================
+    // ADMIN: Approve a reservation
+    // ==========================================
+    public function approve()
+    {
+        if (!isset($_GET['id'])) {
+            header('Location: index.php?url=reservations');
+            exit;
+        }
+
+        $id = (int)$_GET['id'];
+
+        try {
+            $this->conn->beginTransaction();
+
+            // Get reservation current status
+            $stmt = $this->conn->prepare("SELECT status FROM reservations WHERE id_reservation = :id");
+            $stmt->execute([':id' => $id]);
+            $reservation = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$reservation) {
+                $_SESSION['error'] = "Réservation introuvable.";
+                header('Location: index.php?url=reservations');
+                exit;
+            }
+
+            if ($reservation['status'] !== 'Pending') {
+                $_SESSION['error'] = "Seules les réservations en attente peuvent être approuvées.";
+                header('Location: index.php?url=reservations');
+                exit;
+            }
+
+            // Get equipment items for this reservation
+            $stmt = $this->conn->prepare("
+                SELECT re.equipment_id, re.quantity, e.quantity_stock, e.name
+                FROM reservation_equipment re
+                JOIN equipment e ON re.equipment_id = e.id_equipment
+                WHERE re.reservation_id = :id
+            ");
+            $stmt->execute([':id' => $id]);
+            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Check stock availability and decrease quantity
+            foreach ($items as $item) {
+                if ($item['quantity'] > $item['quantity_stock']) {
+                    throw new Exception("Stock insuffisant pour \"" . $item['name'] . "\" (Stock: " . $item['quantity_stock'] . ", Demandé: " . $item['quantity'] . ")");
+                }
+                // Decrease equipment stock
+                $stmt = $this->conn->prepare("
+                    UPDATE equipment SET quantity_stock = quantity_stock - :qty
+                    WHERE id_equipment = :eq_id
+                ");
+                $stmt->execute([
+                    ':qty' => $item['quantity'],
+                    ':eq_id' => $item['equipment_id']
+                ]);
+            }
+
+            // Update reservation status to Approved
+            $stmt = $this->conn->prepare("UPDATE reservations SET status = 'Approved' WHERE id_reservation = :id");
+            $stmt->execute([':id' => $id]);
+
+            $this->conn->commit();
+            $_SESSION['success'] = "Réservation #$id approuvée avec succès. Le stock a été mis à jour.";
+
+        } catch (Exception $e) {
+            $this->conn->rollBack();
+            $_SESSION['error'] = "Erreur : " . $e->getMessage();
+        }
+
+        header('Location: index.php?url=reservations');
+        exit;
+    }
+
+    // ==========================================
+    // ADMIN: Reject a reservation
+    // ==========================================
+    public function reject()
+    {
+        if (!isset($_GET['id'])) {
+            header('Location: index.php?url=reservations');
+            exit;
+        }
+
+        $id = (int)$_GET['id'];
+
+        try {
+            $this->conn->beginTransaction();
+
+            // Get reservation current status
+            $stmt = $this->conn->prepare("SELECT status FROM reservations WHERE id_reservation = :id");
+            $stmt->execute([':id' => $id]);
+            $reservation = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$reservation) {
+                $_SESSION['error'] = "Réservation introuvable.";
+                header('Location: index.php?url=reservations');
+                exit;
+            }
+
+            // If it was previously Approved, restore the stock
+            if ($reservation['status'] === 'Approved') {
+                $stmt = $this->conn->prepare("
+                    SELECT equipment_id, quantity
+                    FROM reservation_equipment
+                    WHERE reservation_id = :id
+                ");
+                $stmt->execute([':id' => $id]);
+                $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                foreach ($items as $item) {
+                    $stmt = $this->conn->prepare("
+                        UPDATE equipment SET quantity_stock = quantity_stock + :qty
+                        WHERE id_equipment = :eq_id
+                    ");
+                    $stmt->execute([
+                        ':qty' => $item['quantity'],
+                        ':eq_id' => $item['equipment_id']
+                    ]);
+                }
+            }
+
+            // Update reservation status to Rejected
+            $stmt = $this->conn->prepare("UPDATE reservations SET status = 'Rejected' WHERE id_reservation = :id");
+            $stmt->execute([':id' => $id]);
+
+            $this->conn->commit();
+            $_SESSION['success'] = "Réservation #$id rejetée.";
+
+        } catch (Exception $e) {
+            $this->conn->rollBack();
+            $_SESSION['error'] = "Erreur : " . $e->getMessage();
+        }
+
+        header('Location: index.php?url=reservations');
+        exit;
+    }
 }

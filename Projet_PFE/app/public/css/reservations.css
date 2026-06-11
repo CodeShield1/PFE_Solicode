@@ -1,0 +1,519 @@
+/* ===========================================================
+   ADMIN RESERVATION – Collapsible Card Design
+   Matches reference: ConstructRent reservation UI
+   =========================================================== */
+
+/* --- ALERTS --- */
+.res-alert {
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.res-alert-error { background: #fff5f5; color: #e53e3e; border: 1px solid #feb2b2; }
+.res-alert-success { background: #f0fff4; color: #38a169; border: 1px solid #9ae6b4; }
+
+/* --- RESERVATION LIST --- */
+.res-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* --- EMPTY STATE --- */
+.res-empty {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    color: #a0aec0;
+}
+
+.res-empty i { font-size: 48px; margin-bottom: 16px; color: #e2e8f0; }
+.res-empty p { font-size: 16px; font-weight: 600; }
+
+/* ===========================================================
+   RESERVATION CARD
+   =========================================================== */
+.res-card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+
+.res-card:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+/* --- SUMMARY ROW --- */
+.res-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+}
+
+.res-summary:hover {
+    background: #f8fafc;
+}
+
+.res-summary-left {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex: 1;
+    min-width: 0;
+}
+
+.res-summary-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+}
+
+/* Summary: ID + Date */
+.res-summary-id {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 120px;
+}
+
+.res-ref {
+    font-size: 15px;
+    font-weight: 800;
+    color: #1a202c;
+}
+
+.res-summary-date {
+    font-size: 12px;
+    color: #a0aec0;
+}
+
+/* Summary: Period */
+.res-summary-period {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #4a5568;
+}
+
+.res-summary-period i {
+    color: var(--active-orange);
+    font-size: 13px;
+}
+
+.res-summary-period strong {
+    color: #1a202c;
+}
+
+/* Summary: Equipment count */
+.res-summary-equip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #718096;
+}
+
+.res-summary-equip i {
+    color: var(--active-orange);
+    font-size: 13px;
+}
+
+/* Summary: Total */
+.res-summary-total {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.res-total-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #a0aec0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.res-total-value {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--active-orange);
+}
+
+/* --- STATUS BADGE --- */
+.res-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.res-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.res-status-pending { background: #fff8e1; color: #d97706; }
+.res-status-pending .res-status-dot { background: #f59e0b; }
+
+.res-status-approved { background: #ecfdf5; color: #059669; }
+.res-status-approved .res-status-dot { background: #10b981; }
+
+.res-status-rejected { background: #fef2f2; color: #dc2626; }
+.res-status-rejected .res-status-dot { background: #ef4444; }
+
+/* --- VIEW DETAILS BUTTON --- */
+.btn-view-details {
+    background: white;
+    color: var(--active-orange);
+    border: 2px solid var(--active-orange);
+    padding: 7px 18px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-view-details:hover {
+    background: var(--active-orange);
+    color: white;
+}
+
+/* --- CHEVRON --- */
+.res-chevron {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a0aec0;
+    font-size: 13px;
+    transition: transform 0.3s ease;
+}
+
+.res-card.expanded .res-chevron {
+    transform: rotate(180deg);
+}
+
+/* ===========================================================
+   EXPANDED DETAILS
+   =========================================================== */
+.res-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+}
+
+.res-details-inner {
+    padding: 0 24px 24px;
+    border-top: 1px solid #edf2f7;
+}
+
+/* Details Header */
+.res-details-header {
+    padding: 20px 0 16px;
+}
+
+.res-details-header h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0 0 14px;
+}
+
+.res-details-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.res-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.meta-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #a0aec0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.meta-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a202c;
+}
+
+/* Client Info */
+.res-details-client {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: #f8fafc;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    border: 1px solid #edf2f7;
+}
+
+.res-client-avatar-lg {
+    width: 44px;
+    height: 44px;
+    background: #ebf8ff;
+    color: #3182ce;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 17px;
+    flex-shrink: 0;
+}
+
+.res-client-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.rcf-name { font-size: 15px; font-weight: 700; color: #1a202c; }
+
+.rcf-contact {
+    font-size: 12px;
+    color: #718096;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.rcf-contact i { color: var(--active-orange); font-size: 10px; width: 14px; }
+
+/* ===========================================================
+   EQUIPMENT TABLE (inside details)
+   =========================================================== */
+.res-eq-table-wrap {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #edf2f7;
+}
+
+.res-eq-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.res-eq-table thead {
+    background: #f8fafc;
+}
+
+.res-eq-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #718096;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.res-eq-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #4a5568;
+    vertical-align: middle;
+}
+
+.res-eq-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.res-eq-table tfoot td {
+    padding: 14px 16px;
+    border-top: 2px solid #edf2f7;
+    background: #f8fafc;
+}
+
+/* Equipment Cell */
+.res-eq-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.res-eq-thumb {
+    width: 44px;
+    height: 34px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.res-eq-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.eq-thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #edf2f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #cbd5e0;
+    font-size: 14px;
+}
+
+.res-eq-name-city {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ren-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a202c;
+}
+
+.ren-city {
+    font-size: 11px;
+    color: #a0aec0;
+}
+
+.ren-city i { color: var(--active-orange); font-size: 9px; }
+
+/* Total Footer */
+.res-total-footer {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--active-orange);
+}
+
+.res-total-footer-value {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--active-orange);
+}
+
+/* ===========================================================
+   ACTION BUTTONS (inside details)
+   =========================================================== */
+.res-detail-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid #edf2f7;
+}
+
+.res-actions-rejected {
+    justify-content: flex-end;
+}
+
+.res-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+}
+
+.res-btn-approve {
+    background: #10b981;
+    color: white;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+}
+
+.res-btn-approve:hover {
+    background: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(16, 185, 129, 0.35);
+}
+
+.res-btn-reject {
+    background: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+}
+
+.res-btn-reject:hover {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+    transform: translateY(-1px);
+}
+
+.res-action-note {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    flex: 1;
+}
+
+.res-note-approved { color: #10b981; }
+.res-note-approved i { font-size: 15px; }
+
+.res-note-rejected { color: #a0aec0; }
+.res-note-rejected i { color: #ef4444; font-size: 15px; }
+
+/* ===========================================================
+   RESPONSIVE
+   =========================================================== */
+@media (max-width: 1100px) {
+    .res-summary-left { gap: 18px; flex-wrap: wrap; }
+    .res-summary-total { flex-direction: row; gap: 6px; align-items: center; }
+}
+
+@media (max-width: 768px) {
+    .res-summary {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .res-summary-left { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .res-summary-right { width: 100%; justify-content: space-between; }
+    .res-details-meta { flex-direction: column; gap: 10px; }
+    .res-eq-table { font-size: 12px; }
+    .res-eq-table th, .res-eq-table td { padding: 10px 10px; }
+    .res-detail-actions { flex-direction: column; }
+    .res-btn { width: 100%; justify-content: center; }
+}

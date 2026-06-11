@@ -115,6 +115,40 @@ switch ($url) {
     case 'admin_dashboard':
         // Sécurité : Seul l'admin peut entrer ici
         if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            require_once __DIR__ . "/../config/database.php";
+            $db = new Database();
+            $conn = $db->connect();
+
+            // Reservation stats
+            $stmt = $conn->query("SELECT status, COUNT(*) as cnt, COALESCE(SUM(total_price),0) as revenue FROM reservations GROUP BY status");
+            $resStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $dashPending = 0; $dashApproved = 0; $dashRejected = 0; $dashRevenue = 0;
+            foreach ($resStats as $rs) {
+                if ($rs['status'] === 'Pending') $dashPending = (int)$rs['cnt'];
+                elseif ($rs['status'] === 'Approved') { $dashApproved = (int)$rs['cnt']; $dashRevenue = (float)$rs['revenue']; }
+                elseif ($rs['status'] === 'Rejected') $dashRejected = (int)$rs['cnt'];
+            }
+
+            // Total equipment
+            $stmt = $conn->query("SELECT COUNT(*) as cnt FROM equipment");
+            $dashEquipment = (int)$stmt->fetch(PDO::FETCH_ASSOC)['cnt'];
+
+            // Total clients
+            $stmt = $conn->query("SELECT COUNT(*) as cnt FROM users WHERE role='client'");
+            $dashClients = (int)$stmt->fetch(PDO::FETCH_ASSOC)['cnt'];
+
+            // Total categories
+            $stmt = $conn->query("SELECT COUNT(*) as cnt FROM categories");
+            $dashCategories = (int)$stmt->fetch(PDO::FETCH_ASSOC)['cnt'];
+
+            // Total cities
+            $stmt = $conn->query("SELECT COUNT(*) as cnt FROM cities");
+            $dashCities = (int)$stmt->fetch(PDO::FETCH_ASSOC)['cnt'];
+
+            // Recent reservations (last 5)
+            $stmt = $conn->query("SELECT r.id_reservation, r.status, r.total_price, r.created_at, u.name as client_name FROM reservations r JOIN users u ON r.user_id = u.id_user ORDER BY r.created_at DESC LIMIT 5");
+            $dashRecentRes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             require_once "../views/admin/dashboard.php";
         } else {
             header('Location: index.php?url=login');
@@ -290,6 +324,36 @@ switch ($url) {
     case 'clients':
         if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
             $clientController->index();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'reservations':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            require_once "../controllers/ReservationController.php";
+            (new ReservationController())->adminIndex();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'approve_reservation':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            require_once "../controllers/ReservationController.php";
+            (new ReservationController())->approve();
+        } else {
+            header('Location: index.php?url=login');
+            exit;
+        }
+        break;
+
+    case 'reject_reservation':
+        if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+            require_once "../controllers/ReservationController.php";
+            (new ReservationController())->reject();
         } else {
             header('Location: index.php?url=login');
             exit;
