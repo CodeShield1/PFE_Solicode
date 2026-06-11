@@ -93,10 +93,10 @@ $pageCSS    = isset($pageCSS)    && is_array($pageCSS)    ? $pageCSS    : [];
             </div>
 
             <?php if ($showCart): ?>
-                <a href="index.php?url=cart" class="cart-btn" aria-label="Cart">
+                <button onclick="openCartDrawer()" class="cart-btn" aria-label="Cart">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-badge">0</span>
-                </a>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </button>
             <?php endif; ?>
 
             <div class="profile-nav">

@@ -17,10 +17,6 @@ $pageJS     = ['home'];
 include __DIR__ . '/../layout/client_header.php';
 ?>
 
-<!-- Flatpickr (modern date picker) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
 <main class="home-page">
 
     <?php include __DIR__ . '/partials/hero.php';          ?>

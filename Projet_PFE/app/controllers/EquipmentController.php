@@ -111,6 +111,11 @@ class EquipmentController
         }
     }
 
+    public function getEquipmentModel()
+    {
+        return $this->equipmentModel;
+    }
+
     private function uploadImage($file)
     {
         $targetDir = __DIR__ . "/../public/uploads/equipments/";
